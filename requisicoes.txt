@@ -1,0 +1,26 @@
+servidor
+    listar pastas talvez?
+    
+
+cliente 
+    
+    pastas ->
+
+    listar arquivos
+    baixar um
+    enviar um
+    criar pasta
+    apagar pasta
+    renomear pasta
+    mover arquivo
+     
+    usuarios ->
+
+    criar usuario
+    logar
+    mudar senha
+    deslogar
+
+ref:
+    
+http://effbot.org/zone/python-fileinfo.htm
