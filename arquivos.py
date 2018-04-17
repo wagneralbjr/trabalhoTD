@@ -17,7 +17,7 @@ class Arquivos():
         self.working_path = directory
     
     def atualiza_arquivos(self):
-        """Cria uma lista com os arquivos e pastas do diretório
+        """Cria uma dicionário com os arquivos e pastas do diretório
             de trabalho"""
         for arq in os.listdir(self.working_path):
 
@@ -31,7 +31,56 @@ class Arquivos():
 
             self.arquivos[arq] = result 
 
+    def cria_diretorio(self, nome = None, pasta_raiz = None):
+        """ cria um diretório."""
+
+        if (nome is None):
+            print("Erro : Nome não pode ser vazio ao criar um diretório")
+            return
+
+        if (pasta_raiz is None):
+            pasta_raiz = self.working_path
+
+        if ( os.path.exists(os.path.join(pasta_raiz, nome)) ):
+            print('Já existe um arquivo ou pasta com esse nome : %s na pasta %s.'%(nome,pasta_raiz))
+            return
+
+        try:  
+            os.makedirs(os.path.join(pasta_raiz, nome) )
+        except Exception as e:
+            print(e)
+            print("não foi possível criar a pasta '%s' no diretório '%s'"%(nome,pasta_raiz))
+
+    def apaga_diretorio(self, nome= None, pasta_raiz = None):
+        """ apaga um diretório """
+        
+        if (nome is None):
+            print("Erro : Nome não pode ser vazio ao criar um diretório")
+            return
+
+        if (pasta_raiz is None):
+            pasta_raiz = self.working_path
+        
+        #to-do : apagar a pasta.
+        return
+
+    def muda_pasta(self, nome = None, pasta_abs = None):
+        
+        if(nome is None):
+            return
+        
+
+        return
+
+
+
 if __name__ == "__main__":
     obj = Arquivos()
     obj.atualiza_arquivos()
     print(obj.arquivos)
+    obj.cria_diretorio(nome="nova_pasta")
+    obj.atualiza_arquivos()
+    print(obj.arquivos)
+
+
+
