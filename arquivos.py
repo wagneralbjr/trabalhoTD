@@ -19,6 +19,7 @@ class Arquivos():
     def atualiza_arquivos(self):
         """Cria uma dicionário com os arquivos e pastas do diretório
             de trabalho"""
+        self.arquivos = dict()
         for arq in os.listdir(self.working_path):
 
             result = dict()
@@ -65,12 +66,28 @@ class Arquivos():
         return
 
     def muda_pasta(self, nome = None, pasta_abs = None):
-        
+        '''muda a pasta atual '''
+        # se passar a pasta_abs, ignorar o nome e usar a pasta_abs
         if(nome is None):
+            return  
+
+        if(nome == '..'):
+            # acho q essa lógica só vai funcionar em unix
+            try: 
+                _ = self.working_path.split('/')[:-1]
+            except Exception as e:
+                print(e)
+            #print(_)
+            self.working_path = "/".join(_)
+            return
+        caminho = pasta_abs or os.path.join(self.working_path, nome)
+
+        if ( os.path.isdir(caminho)):
+            self.working_path = caminho  
             return
         
-
         return
+
 
 
 
@@ -78,9 +95,8 @@ if __name__ == "__main__":
     obj = Arquivos()
     obj.atualiza_arquivos()
     print(obj.arquivos)
-    obj.cria_diretorio(nome="nova_pasta")
+    obj.muda_pasta('..')
     obj.atualiza_arquivos()
     print(obj.arquivos)
-
 
 
