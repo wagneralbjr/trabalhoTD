@@ -3,6 +3,7 @@ import socket
 import time
 from authentication import Authentication
 from arquivos import Arquivos
+import os
 
 TELNET_ESCAPE = 0
 
@@ -20,6 +21,9 @@ class ThreadedServer(object):
         self.username = None
 
         self.autentica = Authentication()
+
+        self.arq = None
+
     def listen(self):
         self.sock.listen(5)
         while True:
@@ -32,7 +36,7 @@ class ThreadedServer(object):
         while True:
             codigo = client.recv(size)
             if codigo:
-                try:
+                #try:
                     print(codigo)
                     codigo = int(codigo.decode('utf-8'))
                     print('o código recebido de função foi : ',codigo)
@@ -48,8 +52,13 @@ class ThreadedServer(object):
                     if (self.logado and codigo == 3):
                         self._lista_folders(client,address)
 
-                except Exception as e:
-                    print(e)
+                    #envia arquivo.
+                    if (self.logado and codigo == 4):
+                        self._recebe_arquivo(client, address)
+
+
+                #except Exception as e:
+                #    print(e)
 
         return
 
@@ -79,6 +88,10 @@ class ThreadedServer(object):
             msg = "0"
         client.send(msg.encode())
 
+        # instancia a pasta do usuario no sv.
+        if (self.logado):
+            self.arq = Arquivos(self.username)
+
 
     def _create_user(self, client,address):
         """ Permite a criação de usuários"""
@@ -101,17 +114,47 @@ class ThreadedServer(object):
             print('deve estar logado para acessar os arquivos.')
             return False
 
-        arq = Arquivos(self.username)
-        arq.atualiza_arquivos()
 
-        dados = str(arq.arquivos).encode()
+        self.arq.atualiza_arquivos()
 
+        #dados = str(arq.arquivos).encode()
+
+        dados = ""
+        dados += "NOME\t\t\t\tPASTA\n"
+        for key,value in self.arq.arquivos.items():
+
+            dados+= "%s\t\t\t"%(key)
+            if(value):
+                dados+="SIM"
+            else:
+                dados+="NAO"
+            dados+="\n"
+
+        dados+="\n"
+        dados = dados.encode()
 
         print(dados)
 
         client.send(str(len(dados)).encode())
         client.send(dados)
 
+    def _recebe_arquivo(self, client, address):
+
+        if (not self.logado):
+            client.send('0'.encode())
+            return False
+
+        # recebe nome do arquivo
+        tamNome = int(client.recv(64))
+        nomeArq = client.recv(tamNome).decode('utf-8')
+
+        # recebe arquivo
+        tam_arquivo = int(client.recv(64))
+        arquivo = client.recv(tam_arquivo)
+
+        file = open(os.path.join(self.arq.working_path,nomeArq),"wb")
+        file.write(arquivo)
+        file.close()
 
 
 if __name__ == "__main__":

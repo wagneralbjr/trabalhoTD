@@ -32,3 +32,12 @@ logar: cod: 01 , login: string , senha: string
 criar_usuario: cod: 02, login: string, senha: string
 
         02 bytes, login: 32 bytes, senha : 32 bytes
+
+lista_usuarios: cod: 03, argumentos: None
+
+        02 bytes
+        retorna texto de tamanho variável.
+
+_recebe_arquivo: cod: 04 , tamNomeArq : int, nomeArq : string, tamArq: int, arquivo:bits
+
+        16 bytes, tamNomeArq bytes, tamArq: 64bits, len(tamArq) bytes

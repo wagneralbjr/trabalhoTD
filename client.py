@@ -64,25 +64,32 @@ class Cliente():
         tam = int(dados)
 
         texto = self.sock.recv(tam).decode('utf-8')
-        
+
         print(texto)
 
+    def _envia_arquivo(self, nome_arq):
+
+        self.sock.send("04".encode())
 
 
+        file = open(nome_arq, "rb")
+        buffer = file.read()
 
+        tam_nome_arq =  str(len(nome_arq)).rjust(64,'0')
+        print(tam_nome_arq)
+        self.sock.send(tam_nome_arq.encode())
 
+        self.sock.send(nome_arq.encode())
 
+        tam_arquivo = str(len(buffer)).rjust(64,'0')
 
+        self.sock.send(tam_arquivo.encode())
 
-
-
+        self.sock.send(buffer)
 
 clt  = Cliente('localhost',4000)
 clt.start()
 clt.login('wagner','wagner')
 #clt.create_user('leticia','vitoria')
 clt._lista_pasta_atual()
-clt._lista_pasta_atual()
-clt._lista_pasta_atual()
-clt._lista_pasta_atual()
-clt._lista_pasta_atual()
+clt._envia_arquivo('requeriments.txt')
