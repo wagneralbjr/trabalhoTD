@@ -28,3 +28,7 @@ http://effbot.org/zone/python-fileinfo.htm
 
 logar: cod: 01 , login: string , senha: string
         02 bytes, login: 32 bytes, senha: 32 bytes
+
+criar_usuario: cod: 02, login: string, senha: string
+
+        02 bytes, login: 32 bytes, senha : 32 bytes

@@ -1,6 +1,7 @@
 import threading
 import socket
 import time
+from authentication import Authentication
 
 TELNET_ESCAPE = 0
 
@@ -15,6 +16,7 @@ class ThreadedServer(object):
 
         self.logado = False
 
+        self.autentica = Authentication()
     def listen(self):
         self.sock.listen(5)
         while True:
@@ -36,33 +38,67 @@ class ThreadedServer(object):
                     if (not self.logado and codigo == 1):
                         self._login(client,address)
 
+                    if (not self.logado and codigo  == 2):
+                        self._create_user(client,address)
 
-
-
-                except ValueError as e:
+                except Exception as e:
                     print(e)
-                    print('cod não númerico.')
-                #client.send(('envie um código numérico').encode('utf-8'))
 
         return
 
 
     def _login(self,client,address):
         """ trata o login do usuário"""
+
         print('entrou login')
         dados = client.recv(64 + TELNET_ESCAPE).decode('utf-8')
-        login, senha = (dados.split(' '))
+        (login,senha) = (dados.split(' '))
 
-        print(login ,"\n",senha)
+        print(login)
+        print(senha)
+
+
+        if (self.autentica.login(login,senha)):
+            self.logado = True
+            print('logou')
+        else:
+            print('nao logou')
+
+        #verifica se logou e responde o usuário
+        if(self.logado):
+            msg = "1"
+        else:
+            msg = "0"
+        client.send(msg.encode())
+
+
+    def _create_user(self, client,address):
+        """ Permite a criação de usuários"""
+        print('entrou create_user')
+        dados = client.recv(64 + TELNET_ESCAPE).decode('utf-8')
+        (login,senha) = (dados.split(' '))
+
+
+        if(self.autentica.create_user(login,senha)):
+            print('usuario criado')
+            msg = '1'
+        else:
+            print('usuario nao criado')
+            msg = '0'
+
+        client.send(msg.encode())
+
+
 
 
 
 
 
 if __name__ == "__main__":
-    port_num = input("Port?")
+    #port_num = input("Port?")
 
-    port_num = int(port_num)
+    #port_num = int(port_num)
+    port_num = 4000
 
 
 
