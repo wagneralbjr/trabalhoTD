@@ -1,9 +1,9 @@
 servidor
     listar pastas talvez?
-    
 
-cliente 
-    
+
+cliente
+
     pastas ->
 
     listar arquivos
@@ -13,7 +13,7 @@ cliente
     apagar pasta
     renomear pasta
     mover arquivo
-     
+
     usuarios ->
 
     criar usuario
@@ -22,5 +22,9 @@ cliente
     deslogar
 
 ref:
-    
+
 http://effbot.org/zone/python-fileinfo.htm
+
+
+logar: cod: 01 , login: string , senha: string
+        02 bytes, login: 32 bytes, senha: 32 bytes
