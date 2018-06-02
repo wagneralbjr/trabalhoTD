@@ -2,6 +2,7 @@ import threading
 import socket
 import time
 from authentication import Authentication
+from arquivos import Arquivos
 
 TELNET_ESCAPE = 0
 
@@ -15,6 +16,8 @@ class ThreadedServer(object):
         self.sock.bind((self.host,self.port))
 
         self.logado = False
+
+        self.username = None
 
         self.autentica = Authentication()
     def listen(self):
@@ -37,9 +40,13 @@ class ThreadedServer(object):
                     # se não está logado e o código eh 1, o cliente quer logar.
                     if (not self.logado and codigo == 1):
                         self._login(client,address)
-
+                    # permite o usuario deslogado criar um user.
                     if (not self.logado and codigo  == 2):
                         self._create_user(client,address)
+
+                    #self permite o usuario logado listar suas pastas.
+                    if (self.logado and codigo == 3):
+                        self._lista_folders(client,address)
 
                 except Exception as e:
                     print(e)
@@ -60,6 +67,7 @@ class ThreadedServer(object):
 
         if (self.autentica.login(login,senha)):
             self.logado = True
+            self.username = login
             print('logou')
         else:
             print('nao logou')
@@ -88,9 +96,21 @@ class ThreadedServer(object):
 
         client.send(msg.encode())
 
+    def _lista_folders(self, client, address):
+        if (not self.logado):
+            print('deve estar logado para acessar os arquivos.')
+            return False
+
+        arq = Arquivos(self.username)
+        arq.atualiza_arquivos()
+
+        dados = str(arq.arquivos).encode()
 
 
+        print(dados)
 
+        client.send(str(len(dados)).encode())
+        client.send(dados)
 
 
 

@@ -21,7 +21,7 @@ class Cliente():
         pass
 
 
-    def _login(self, usuario, senha):
+    def login(self, usuario, senha):
 
         self.sock.send('01'.encode()) #código login
 
@@ -39,7 +39,7 @@ class Cliente():
             print('não logado')
             return False
 
-    def _create_user(self, login, senha):
+    def create_user(self, login, senha):
 
         self.sock.send("02".encode())
 
@@ -56,11 +56,33 @@ class Cliente():
             return False
 
 
+    def _lista_pasta_atual(self):
+
+        self.sock.send("03".encode())
+
+        dados = self.sock.recv(64).decode('utf-8')
+        tam = int(dados)
+
+        texto = self.sock.recv(tam).decode('utf-8')
+        
+        print(texto)
+
+
+
+
+
+
+
 
 
 
 
 clt  = Cliente('localhost',4000)
 clt.start()
-#clt._login('wagner','wagner')
-clt._create_user('leticia','vitoria')
+clt.login('wagner','wagner')
+#clt.create_user('leticia','vitoria')
+clt._lista_pasta_atual()
+clt._lista_pasta_atual()
+clt._lista_pasta_atual()
+clt._lista_pasta_atual()
+clt._lista_pasta_atual()

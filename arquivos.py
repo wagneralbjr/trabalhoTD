@@ -3,11 +3,11 @@ import os
 class Arquivos():
 
     working_path = None
-    arquivos = dict() 
+    arquivos = dict()
 
     def __init__(self, pasta = "arquivos" ):
-        directory = os.path.dirname(os.path.abspath(__file__)) 
-        directory = os.path.join(directory,pasta) 
+        directory = os.path.dirname(os.path.abspath(__file__))
+        directory = os.path.join(directory,pasta)
         try:
             if not os.path.exists(directory):
                 os.makedirs(directory)
@@ -15,7 +15,7 @@ class Arquivos():
             print(e)
 
         self.working_path = directory
-    
+
     def atualiza_arquivos(self):
         """Cria uma dicionário com os arquivos e pastas do diretório
             de trabalho"""
@@ -28,9 +28,9 @@ class Arquivos():
 
             infos = os.stat(caminho)
             result['ultima_mod'] = infos[8]
-            result['tam'] = infos[6]  
+            result['tam'] = infos[6]
 
-            self.arquivos[arq] = result 
+            self.arquivos[arq] = result
 
     def cria_diretorio(self, nome = None, pasta_raiz = None):
         """ cria um diretório."""
@@ -46,7 +46,7 @@ class Arquivos():
             print('Já existe um arquivo ou pasta com esse nome : %s na pasta %s.'%(nome,pasta_raiz))
             return
 
-        try:  
+        try:
             os.makedirs(os.path.join(pasta_raiz, nome) )
         except Exception as e:
             print(e)
@@ -54,14 +54,14 @@ class Arquivos():
 
     def apaga_diretorio(self, nome= None, pasta_raiz = None):
         """ apaga um diretório """
-        
+
         if (nome is None):
             print("Erro : Nome não pode ser vazio ao criar um diretório")
             return
 
         if (pasta_raiz is None):
             pasta_raiz = self.working_path
-        
+
         #to-do : apagar a pasta.
         return
 
@@ -69,11 +69,11 @@ class Arquivos():
         '''muda a pasta atual '''
         # se passar a pasta_abs, ignorar o nome e usar a pasta_abs
         if(nome is None):
-            return  
+            return
 
         if(nome == '..'):
             # acho q essa lógica só vai funcionar em unix
-            try: 
+            try:
                 _ = self.working_path.split('/')[:-1]
             except Exception as e:
                 print(e)
@@ -83,9 +83,9 @@ class Arquivos():
         caminho = pasta_abs or os.path.join(self.working_path, nome)
 
         if ( os.path.isdir(caminho)):
-            self.working_path = caminho  
+            self.working_path = caminho
             return
-        
+
         return
 
 
@@ -98,5 +98,3 @@ if __name__ == "__main__":
     obj.muda_pasta('..')
     obj.atualiza_arquivos()
     print(obj.arquivos)
-
-
