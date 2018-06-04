@@ -5,6 +5,9 @@ from authentication import Authentication
 from arquivos import Arquivos
 import os
 
+
+from utils import len_to_64b, recebe_string, recebe_arquivo
+
 TELNET_ESCAPE = 0
 
 class ThreadedServer(object):
@@ -56,6 +59,8 @@ class ThreadedServer(object):
                     if (self.logado and codigo == 4):
                         self._recebe_arquivo(client, address)
 
+                    if (self.logado and codigo == 5):
+                        self._envia_arquivo(client, address)
 
                 #except Exception as e:
                 #    print(e)
@@ -139,38 +144,36 @@ class ThreadedServer(object):
         client.send(dados)
 
     def _recebe_arquivo(self, client, address):
-
+        """ Refatorar essa função: ela deve retornar um arquivo, para poder enviar aos outros usuários"""
         if (not self.logado):
             client.send('0'.encode())
             return False
 
         # recebe nome do arquivo
-        tamNome = int(client.recv(64).decode('utf-8'))
-        nomeArq = client.recv(tamNome).decode('utf-8')
+        nomeArq = recebe_string(client)
 
-        # recebe arquivo
-        tam_arquivo = int(client.recv(64))
-        print(tam_arquivo)
-        #arquivo = client.recv(tam_arquivo)
-
-        chunk_size = 1024
-        qtd_packages = int(tam_arquivo / chunk_size)
-
-        arquivo = [] #buffer
-
-        for i in range(0, qtd_packages):
-            arquivo.append(client.recv(chunk_size))
-
-        falta = tam_arquivo - (qtd_packages * chunk_size)
-        if ( falta > 0 ):
-            arquivo.append(client.recv(falta))
-
-
+        arquivo = recebe_arquivo(client)
 
         file = open(os.path.join(self.arq.working_path,nomeArq),"wb")
         for elem in arquivo:
             file.write(elem)
         file.close()
+
+    def _envia_arquivo(self, client, address):
+        #refatorando essa função.
+        """ envia um arquivo para um cliente """
+
+        tam_nome_arq = int(client.recv(64))
+
+        nome_arq = client.recv(tam_nome_arq).decode('utf-8')
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":

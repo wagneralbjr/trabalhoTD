@@ -1,8 +1,5 @@
 import socket
-
-
-
-
+from utils import len_to_64b, envia_arquivo, envia_string
 
 
 class Cliente():
@@ -12,7 +9,6 @@ class Cliente():
         self.host = host
         self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 
         self.sock.connect((host,port))
 
@@ -71,38 +67,31 @@ class Cliente():
 
         self.sock.send("04".encode())
 
+        envia_string(self.sock, nome_arq)
+        envia_arquivo(self.sock, nome_arq)
 
-        file = open(nome_arq, "rb")
-        buffer = file.read()
 
-        tam_nome_arq =  str(len(nome_arq)).rjust(64,'0')
-        print(tam_nome_arq)
-        self.sock.send(tam_nome_arq.encode())
+
+
+    def _baixa_arquivo(self, nome_arq):
+        """ fazer essa funçao."""
+        self.sock.send("05".encode())
+
+        #envia tam do nome do arquivo
+        self.sock.send( int_to_64b(nome_arq) )
 
         self.sock.send(nome_arq.encode())
 
-        tam_arquivo = str(len(buffer)).rjust(64,'0')
+        #recebe tamanho do arquivo
 
-        self.sock.send(tam_arquivo.encode())
+        self.sock.recv(64)
 
-        print('tamanho em bytes', tam_arquivo)
-        # divide o arquivo e manda em pedaços
-        # loucura loucura
 
-        tam_arquivo = int(len(buffer))
-        chunk_size = 1024
-        qtd_packages = int(tam_arquivo / chunk_size)
 
-        for i in range(0 , qtd_packages):
-            self.sock.send(buffer[i * chunk_size : (i+1) * chunk_size])
-
-        self.sock.send(buffer[(qtd_packages+1) * chunk_size : ])
-
-        #self.sock.send(buffer)
 
 clt  = Cliente('localhost',4000)
 clt.start()
 clt.login('wagner','wagner')
 #clt.create_user('leticia','vitoria')
 #clt._lista_pasta_atual()
-clt._envia_arquivo('a.sh')
+clt._envia_arquivo('atom-amd64.deb')

@@ -41,3 +41,9 @@ lista_usuarios: cod: 03, argumentos: None
 _recebe_arquivo: cod: 04 , tamNomeArq : int, nomeArq : string, tamArq: int, arquivo:bits
 
         16 bytes, tamNomeArq bytes, tamArq: 64bits, len(tamArq) bytes
+
+baixa_arquivo: cod : 05 , tamNomeArq: int, nomeArq: string
+# mesma coisa que a de cima só q agora o servidor envia um arquivo para o cliente.
+
+
+        16 bytes, tamNomeArq bytes, tamArq: 64bits, len(tamArq) bytes
