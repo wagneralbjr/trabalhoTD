@@ -85,11 +85,24 @@ class Cliente():
 
         self.sock.send(tam_arquivo.encode())
 
-        self.sock.send(buffer)
+        print('tamanho em bytes', tam_arquivo)
+        # divide o arquivo e manda em pedaços
+        # loucura loucura
+
+        tam_arquivo = int(len(buffer))
+        chunk_size = 1024
+        qtd_packages = int(tam_arquivo / chunk_size)
+
+        for i in range(0 , qtd_packages):
+            self.sock.send(buffer[i * chunk_size : (i+1) * chunk_size])
+
+        self.sock.send(buffer[(qtd_packages+1) * chunk_size : ])
+
+        #self.sock.send(buffer)
 
 clt  = Cliente('localhost',4000)
 clt.start()
 clt.login('wagner','wagner')
 #clt.create_user('leticia','vitoria')
-clt._lista_pasta_atual()
-clt._envia_arquivo('requeriments.txt')
+#clt._lista_pasta_atual()
+clt._envia_arquivo('a.sh')

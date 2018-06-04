@@ -145,15 +145,31 @@ class ThreadedServer(object):
             return False
 
         # recebe nome do arquivo
-        tamNome = int(client.recv(64))
+        tamNome = int(client.recv(64).decode('utf-8'))
         nomeArq = client.recv(tamNome).decode('utf-8')
 
         # recebe arquivo
         tam_arquivo = int(client.recv(64))
-        arquivo = client.recv(tam_arquivo)
+        print(tam_arquivo)
+        #arquivo = client.recv(tam_arquivo)
+
+        chunk_size = 1024
+        qtd_packages = int(tam_arquivo / chunk_size)
+
+        arquivo = [] #buffer
+
+        for i in range(0, qtd_packages):
+            arquivo.append(client.recv(chunk_size))
+
+        falta = tam_arquivo - (qtd_packages * chunk_size)
+        if ( falta > 0 ):
+            arquivo.append(client.recv(falta))
+
+
 
         file = open(os.path.join(self.arq.working_path,nomeArq),"wb")
-        file.write(arquivo)
+        for elem in arquivo:
+            file.write(elem)
         file.close()
 
 
