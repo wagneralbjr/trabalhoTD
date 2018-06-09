@@ -1,5 +1,7 @@
 import socket
-from utils import len_to_64b, envia_arquivo, envia_string
+from utils import len_to_64b, envia_arquivo, envia_string, recebe_string, recebe_arquivo
+
+from manager import Manager
 
 
 class Cliente():
@@ -12,6 +14,7 @@ class Cliente():
 
         self.sock.connect((host,port))
 
+        self.usuario = None
 
     def start(self):
         pass
@@ -30,6 +33,7 @@ class Cliente():
         res = int(res.decode('utf-8'))
         if (res):
             print('logado com sucesso.')
+            self.usuario = usuario
             return True
         else:
             print('não logado')
@@ -74,19 +78,45 @@ class Cliente():
 
 
     def _baixa_arquivo(self, nome_arq):
-        """ fazer essa funçao."""
+        """ baixa arquivo do servidor.."""
         self.sock.send("05".encode())
 
         #envia tam do nome do arquivo
-        self.sock.send( int_to_64b(nome_arq) )
+        envia_string(self.socket, nome_arq)
 
-        self.sock.send(nome_arq.encode())
+        parts = recebe_arquivo(self.socket)
 
-        #recebe tamanho do arquivo
+        file = open(nome_arq.split('/')[-1], "wb")
 
-        self.sock.recv(64)
+        for part in parts:
+            file.write(part)
+        file.close()
 
-    
+        return
+
+
+
+
+
+
+
+
+    def verifica_downloads(self):
+        "verifica se há downloads a serem feitos"
+
+        ip, port = self.sock.getsockname()
+        man = Manager()
+        rows = man.verifica_downloads(self.login, ip,port)
+
+        if len(rows) > 0 :
+            for row in rows:
+                self._baixa_arquivo(row[0])
+        else:
+            print('não há downloads pendentes')
+
+
+
+
 
 
 
@@ -96,3 +126,4 @@ clt.login('wagner','wagner')
 #clt.create_user('leticia','vitoria')
 #clt._lista_pasta_atual()
 clt._envia_arquivo('a.tgz')
+clt.verifica_downloads()

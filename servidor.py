@@ -177,6 +177,8 @@ class ThreadedServer(object):
         self._registra_envio(path, address)
 
 
+        return
+        
     def _envia_arquivo(self, client, address):
         #refatorando essa função.
         """ envia um arquivo para um cliente """
@@ -186,6 +188,8 @@ class ThreadedServer(object):
         nome_arq = client.recv(tam_nome_arq).decode('utf-8')
 
 
+        return
+
     def _registra_envio(self, path, address):
         """ registra os envios a serem feitos para o usuarios"""
 
@@ -193,10 +197,7 @@ class ThreadedServer(object):
         man.insere_fila(path, self.username)
 
 
-
-
-
-
+        return
 
 
 

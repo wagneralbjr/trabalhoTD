@@ -22,7 +22,7 @@ class Manager:
         return self.cursor.fetchall()
 
     def insere_fila(self, path, user):
-
+        """ insere arquivo na lista de downloads pendentes"""
         users = self.clientes_ativos(user)
 
         for row in users:
@@ -36,3 +36,13 @@ class Manager:
         self.conn.commit()
 
         return
+
+    def verifica_downloads(self, user, ip, port):
+        "verifica se há downloads pendentes"
+
+        sql = """select caminho from files_download where login = '%s' and  ip = '%s'
+                and port = '%s' and concluido = 0
+                """%(user, ip, port)
+        self.cursor.execute(sql)
+
+        return self.cursor.fetchall()
