@@ -1,8 +1,5 @@
 import psycopg2
 
-
-
-
 class Authentication:
 
 
@@ -40,6 +37,7 @@ class Authentication:
         self.cursor.execute(sql)
         row = self.cursor.fetchone()
 
+
         if row is not None:
             if(senha == row[1]):
                 return True
@@ -47,3 +45,14 @@ class Authentication:
                 return False
         else:
             return False
+
+    def registra_login(self, usuario, address):
+        """ registra login do usuario"""
+        ip, port  = address
+
+        sql = "insert into online_users(login,ip,port_num) values ('%s','%s','%s')"% (usuario, ip,port)
+        self.cursor.execute(sql)
+
+        self.conn.commit()
+
+        return

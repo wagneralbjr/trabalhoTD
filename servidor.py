@@ -97,6 +97,10 @@ class ThreadedServer(object):
         if (self.logado):
             self.arq = Arquivos(self.username)
 
+        #salva na lista de usuarios,
+        #print(client, address)
+        self.autentica.registra_login(login, address)
+
 
     def _create_user(self, client,address):
         """ Permite a criação de usuários"""
