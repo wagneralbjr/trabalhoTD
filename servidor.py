@@ -4,7 +4,7 @@ import time
 from authentication import Authentication
 from arquivos import Arquivos
 import os
-
+from manager import Manager
 
 from utils import len_to_64b, recebe_string, recebe_arquivo
 
@@ -26,6 +26,14 @@ class ThreadedServer(object):
         self.autentica = Authentication()
 
         self.arq = None
+
+
+        ###limpar os uusarios onlines quando o servidor sobe.
+
+
+
+
+        ### limpar também a lista de downloads pendentes.
 
     def listen(self):
         self.sock.listen(5)
@@ -158,10 +166,16 @@ class ThreadedServer(object):
 
         arquivo = recebe_arquivo(client)
 
-        file = open(os.path.join(self.arq.working_path,nomeArq),"wb")
+        path = os.path.join(self.arq.working_path,nomeArq)
+        file = open(path,"wb")
         for elem in arquivo:
             file.write(elem)
         file.close()
+
+        #registrar o envio para os clientes.
+
+        self._registra_envio(path, address)
+
 
     def _envia_arquivo(self, client, address):
         #refatorando essa função.
@@ -170,6 +184,14 @@ class ThreadedServer(object):
         tam_nome_arq = int(client.recv(64))
 
         nome_arq = client.recv(tam_nome_arq).decode('utf-8')
+
+
+    def _registra_envio(self, path, address):
+        """ registra os envios a serem feitos para o usuarios"""
+
+        man = Manager()
+        man.insere_fila(path, self.username)
+
 
 
 

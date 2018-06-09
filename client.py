@@ -86,6 +86,7 @@ class Cliente():
 
         self.sock.recv(64)
 
+    
 
 
 
@@ -94,4 +95,4 @@ clt.start()
 clt.login('wagner','wagner')
 #clt.create_user('leticia','vitoria')
 #clt._lista_pasta_atual()
-clt._envia_arquivo('atom-amd64.deb')
+clt._envia_arquivo('a.tgz')
