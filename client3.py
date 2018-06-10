@@ -82,11 +82,12 @@ class Cliente():
         self.sock.send("05".encode())
 
         print(f'entrou baixa_arquivo {nome_arq}')
+
         envia_string(self.sock, nome_arq)
 
         parts = recebe_arquivo(self.sock)
 
-        file = open(nome_arq.split('/')[-1], "wb")
+        file = open('teste/'+nome_arq.split('/')[-1], "wb")
 
         for part in parts:
             file.write(part)
@@ -121,7 +122,8 @@ if __name__ == "__main__":
     clt.start()
     clt.login('wagner','wagner')
     #clt.create_user('leticia','vitoria')
-    clt._lista_pasta_atual()
-    clt._envia_arquivo('a.tgz')
+    #clt._lista_pasta_atual()
+    #clt._envia_arquivo('a.tgz')
     input("insira algo.")
     clt.verifica_downloads()
+    clt.sock.send('00'.encode())

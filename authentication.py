@@ -12,10 +12,15 @@ class Authentication:
 
         self.cursor = self.conn.cursor()
 
+        
 
     def create_database(self):
         #to-do
         pass
+
+
+
+
 
 
     def create_user(self,usuario, senha):

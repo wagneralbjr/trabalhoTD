@@ -25,6 +25,8 @@ def envia_arquivo(socket, arquivo_path, chunk_size = 1024):
 
     socket.send(buffer[(qtd_packages+1) * chunk_size : ])
 
+    socket.send('0'.encode())
+
     return
 
 

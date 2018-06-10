@@ -17,8 +17,8 @@ class Manager:
     def clientes_ativos(self,user,ip , port):
         "retorna todos os endereços dos clientes ativos com aquele login"
         sql = """select ip, port_num from online_users where login = '%s' and
-            port_num != %s and  ip != '%s'
-        """ % (user, port , ip)
+            port_num != %s
+        """ % (user, port)
         self.cursor.execute(sql)
 
         return self.cursor.fetchall()
@@ -27,6 +27,7 @@ class Manager:
         """ insere arquivo na lista de downloads pendentes"""
         users = self.clientes_ativos(user, ip , port)
 
+        print('entrou no manager.')
         for row in users:
 
             sql = """insert into files_download(login,ip,port,caminho,concluido)
@@ -42,9 +43,12 @@ class Manager:
     def verifica_downloads(self, user, ip, port):
         "verifica se há downloads pendentes"
 
+
+
         sql = """select caminho from files_download where login = '%s' and  ip = '%s'
                 and port = '%s' and concluido = 0
                 """%(user, ip, port)
+        print(sql)
         self.cursor.execute(sql)
 
         return self.cursor.fetchall()

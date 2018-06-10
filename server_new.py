@@ -7,7 +7,7 @@ from arquivos import Arquivos
 import os
 from manager import Manager
 from time import sleep
-from utils import len_to_64b, recebe_string, recebe_arquivo
+from utils import len_to_64b, recebe_string, recebe_arquivo,envia_arquivo ,envia_string
 
 TELNET_ESCAPE = 0
 PORT = 4000
@@ -127,9 +127,11 @@ class Cliente():
             #refatorando essa função.
             """ envia um arquivo para um cliente """
 
-            tam_nome_arq = int(client.recv(64))
+            print(f'enviando arquivo para {address}')
 
-            nome_arq = client.recv(tam_nome_arq).decode('utf-8')
+            nome_arq = recebe_string(client)
+
+            envia_arquivo(client, nome_arq)
 
 
             return
@@ -161,16 +163,17 @@ def servidor(socket, address):
             if (not cliente.logado and codigo  == 2):
                 cliente._create_user(client,address)
 
-            #cliente permite o usuario logado listar suas pastas.
             if (cliente.logado and codigo == 3):
                 cliente._lista_folders(client,address)
 
-            #envia arquivo.
             if (cliente.logado and codigo == 4):
                 cliente._recebe_arquivo(client, address)
 
             if (cliente.logado and codigo == 5):
                 cliente._envia_arquivo(client, address)
+
+            if (codigo == 0):
+                break
 
 
     return
