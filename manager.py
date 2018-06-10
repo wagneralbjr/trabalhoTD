@@ -14,16 +14,18 @@ class Manager:
         self.cursor = self.conn.cursor()
 
 
-    def clientes_ativos(self,user):
+    def clientes_ativos(self,user,ip , port):
         "retorna todos os endereços dos clientes ativos com aquele login"
-        sql = "select ip, port_num from online_users where login = '%s'" % (user)
+        sql = """select ip, port_num from online_users where login = '%s' and
+            port_num != %s and  ip != '%s'
+        """ % (user, port , ip)
         self.cursor.execute(sql)
 
         return self.cursor.fetchall()
 
-    def insere_fila(self, path, user):
+    def insere_fila(self, path, user, ip ,port):
         """ insere arquivo na lista de downloads pendentes"""
-        users = self.clientes_ativos(user)
+        users = self.clientes_ativos(user, ip , port)
 
         for row in users:
 

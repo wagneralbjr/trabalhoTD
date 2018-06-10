@@ -1,4 +1,5 @@
 import threading
+import multiprocessing as mp
 import socket
 import time
 from authentication import Authentication
@@ -40,7 +41,8 @@ class ThreadedServer(object):
         while True:
             client, address = self.sock.accept()
             client.settimeout(60)
-            threading.Thread(target = self.listenToClient, args = (client,address)).start()
+            #threading.Thread(target = self.listenToClient, args = (client,address)).start()
+            mp.Process(target = self.listenToClient, args = (client,address)).start()
 
     def listenToClient(self,client,address):
         size = 2 + TELNET_ESCAPE #considerando q tá vindo o /r/n do telnet
@@ -53,7 +55,7 @@ class ThreadedServer(object):
                     print('o código recebido de função foi : ',codigo)
 
                     # se não está logado e o código eh 1, o cliente quer logar.
-                    if (not self.logado and codigo == 1):
+                    if ( codigo == 1):
                         self._login(client,address)
                     # permite o usuario deslogado criar um user.
                     if (not self.logado and codigo  == 2):
@@ -178,7 +180,7 @@ class ThreadedServer(object):
 
 
         return
-        
+
     def _envia_arquivo(self, client, address):
         #refatorando essa função.
         """ envia um arquivo para um cliente """
@@ -192,9 +194,9 @@ class ThreadedServer(object):
 
     def _registra_envio(self, path, address):
         """ registra os envios a serem feitos para o usuarios"""
-
+        ip , port = address
         man = Manager()
-        man.insere_fila(path, self.username)
+        man.insere_fila(path, self.username, ip , port)
 
 
         return

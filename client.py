@@ -119,11 +119,13 @@ class Cliente():
 
 
 
+if __name__ == "__main__":
 
-clt  = Cliente('localhost',4000)
-clt.start()
-clt.login('wagner','wagner')
-#clt.create_user('leticia','vitoria')
-#clt._lista_pasta_atual()
-clt._envia_arquivo('a.tgz')
-clt.verifica_downloads()
+    clt  = Cliente('localhost',4000)
+    clt.start()
+    clt.login('wagner','wagner')
+    #clt.create_user('leticia','vitoria')
+    clt._lista_pasta_atual()
+    clt._envia_arquivo('a.tgz')
+    input("insira algo.")
+    clt.verifica_downloads()
