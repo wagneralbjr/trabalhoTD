@@ -1,6 +1,6 @@
 import socket
 from utils import len_to_64b, envia_arquivo, envia_string, recebe_string, recebe_arquivo
-
+import os
 from manager import Manager
 
 
@@ -27,7 +27,8 @@ class Cliente():
         #usuario senha
         dados = "%s %s"%(usuario,senha)
 
-        self.sock.send(dados.encode('utf-8'))
+        #self.sock.send(dados.encode('utf-8'))
+        envia_string(self.sock, dados)
 
         res  = self.sock.recv(1)
         res = int(res.decode('utf-8'))
@@ -79,15 +80,20 @@ class Cliente():
 
     def _baixa_arquivo(self, nome_arq):
         """ baixa arquivo do servidor.."""
-        self.sock.send("05".encode())
+        #self.sock.send("05".encode())
+
+        envia_string(self.sock, "05")
+
 
         print(f'entrou baixa_arquivo {nome_arq}')
 
         envia_string(self.sock, nome_arq)
 
         parts = recebe_arquivo(self.sock)
+        path = os.path.join('teste',nome_arq.split('/')[-1])
 
-        file = open('teste/'+nome_arq.split('/')[-1], "wb")
+        print(f'caminho arquivo {path}')
+        file = open('teste_recebido.tgz', "wb")
 
         for part in parts:
             file.write(part)
@@ -119,11 +125,9 @@ class Cliente():
 if __name__ == "__main__":
 
     clt  = Cliente('localhost',4000)
-    clt.start()
-    clt.login('wagner','wagner')
     #clt.create_user('leticia','vitoria')
     #clt._lista_pasta_atual()
     #clt._envia_arquivo('a.tgz')
-    input("insira algo.")
+    ##input("insira algo.")
+    #clt._baixa_arquivo('/home/wagner/Documentos/trabalhoTD/wagner/a.tgz')
     clt.verifica_downloads()
-    clt.sock.send('00'.encode())

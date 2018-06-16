@@ -27,8 +27,8 @@ class Cliente():
         #usuario senha
         dados = "%s %s"%(usuario,senha)
 
-        self.sock.send(dados.encode('utf-8'))
-
+        #self.sock.send(dados.encode('utf-8'))
+        envia_string(self.sock, dados)
         res  = self.sock.recv(1)
         res = int(res.decode('utf-8'))
         if (res):
@@ -60,10 +60,7 @@ class Cliente():
 
         self.sock.send("03".encode())
 
-        dados = self.sock.recv(64).decode('utf-8')
-        tam = int(dados)
-
-        texto = self.sock.recv(tam).decode('utf-8')
+        texto = recebe_string(self.sock)
 
         print(texto)
 
@@ -121,7 +118,7 @@ if __name__ == "__main__":
     clt.start()
     clt.login('wagner','wagner')
     #clt.create_user('leticia','vitoria')
-    clt._lista_pasta_atual()
+    #clt._lista_pasta_atual()
     clt._envia_arquivo('a.tgz')
     input("insira algo.")
     clt.verifica_downloads()

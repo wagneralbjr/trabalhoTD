@@ -24,7 +24,8 @@ class Cliente():
         def _login(self,client,address):
             """ trata o login do usuário"""
 
-            dados = client.recv(64 + TELNET_ESCAPE).decode('utf-8')
+            #dados = client.recv(64 + TELNET_ESCAPE).decode('utf-8')
+            dados = recebe_string(client)
             (login,senha) = (dados.split(' '))
 
             print(login)
@@ -101,9 +102,9 @@ class Cliente():
 
         def _recebe_arquivo(self, client, address):
             """ Refatorar essa função: ela deve retornar um arquivo, para poder enviar aos outros usuários"""
-            if (not self.logado):
-                client.send('0'.encode())
-                return False
+            #if (not self.logado):
+            #    client.send('0'.encode())
+            #    return False
 
             # recebe nome do arquivo
             nomeArq = recebe_string(client)
@@ -130,6 +131,7 @@ class Cliente():
             print(f'enviando arquivo para {address}')
 
             nome_arq = recebe_string(client)
+            print(f'nome do arquivo a ser enviado : {nome_arq}')
 
             envia_arquivo(client, nome_arq)
 
@@ -154,23 +156,24 @@ def servidor(socket, address):
     while True:
         sleep(1)
         print(f'o cliente com ip : {address[0]} , porta : {address[1]}, entrou.')
-        codigo = socket.recv(size)
+        codigo = recebe_string(socket)
         if (codigo):
-            codigo = int(codigo.decode('utf-8'))
+            codigo = int(codigo)
             print(f'recebido código:  {codigo} do cliente {address}')
             if (codigo == 1):
                 cliente._login(socket,address)
             if (not cliente.logado and codigo  == 2):
-                cliente._create_user(client,address)
+                cliente._create_user(socket,address)
 
             if (cliente.logado and codigo == 3):
-                cliente._lista_folders(client,address)
+                cliente._lista_folders(socket,address)
 
             if (cliente.logado and codigo == 4):
-                cliente._recebe_arquivo(client, address)
+                cliente._recebe_arquivo(socket, address)
 
-            if (cliente.logado and codigo == 5):
-                cliente._envia_arquivo(client, address)
+            #if (cliente.logado and codigo == 5):
+            if (codigo == 5):
+                cliente._envia_arquivo(socket, address)
 
             if (codigo == 0):
                 break

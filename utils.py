@@ -28,7 +28,8 @@ def envia_arquivo(socket, arquivo_path, chunk_size = 1024):
 
     indice_restante  = (qtd_packages) * chunk_size
     print(f'indice restante {indice_restante}')
-    socket.send(buffer[indice_restante: ])
+    if (indice_restante > 0):
+        socket.send(buffer[indice_restante: ])
 
     #socket.send('0'.encode())
 
@@ -60,6 +61,7 @@ def recebe_arquivo(socket, chunk_size = 1024):
 
 
     tam_arquivo = int(socket.recv(64))
+    print(f' recebeu o arquivo desse tamanho {tam_arquivo}')
     qtd_packages = int(tam_arquivo / chunk_size)
 
     arquivo = []
@@ -69,7 +71,7 @@ def recebe_arquivo(socket, chunk_size = 1024):
 
         arquivo.append(socket.recv(chunk_size))
 
-    falta = tam_arquivo - (qtd_packages +1  * chunk_size )
+    falta = tam_arquivo - ( (qtd_packages)  * chunk_size )
 
     if (falta > 0):
         arquivo.append(socket.recv(falta))
