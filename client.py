@@ -2,7 +2,7 @@ import socket
 from utils import len_to_64b, envia_arquivo, envia_string, recebe_string, recebe_arquivo
 
 from manager import Manager
-
+"adicionar comentarios"
 
 class Cliente():
 
