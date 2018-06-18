@@ -9,7 +9,7 @@ def len_to_64b(nome):
 
 
 """ Esta função deve enviar tamanho e o arquivo somente."""
-def envia_arquivo(socket, arquivo_path, chunk_size = 1024):
+def envia_arquivo(socket, arquivo_path, chunk_size = 4096):
 
 
     buffer = open(arquivo_path, "rb").read()
@@ -23,12 +23,15 @@ def envia_arquivo(socket, arquivo_path, chunk_size = 1024):
 
     qtd_packages = int( tam_arquivo / chunk_size)
     print(f'o arquivo de {tam_arquivo} foi dividido em {qtd_packages}')
+
     for i in range(0 , qtd_packages):
         socket.send(buffer[i * chunk_size : (i+1) * chunk_size])
 
     indice_restante  = (qtd_packages) * chunk_size
+    falta  = tam_arquivo - indice_restante
+
     print(f'indice restante {indice_restante}')
-    if (indice_restante > 0):
+    if (falta > 0):
         socket.send(buffer[indice_restante: ])
 
     #socket.send('0'.encode())
@@ -57,7 +60,7 @@ def recebe_string(socket):
 
 
 """ recebe e retorna um arquivo dividido em pedaços"""
-def recebe_arquivo(socket, chunk_size = 1024):
+def recebe_arquivo(socket, chunk_size = 4096):
 
 
     tam_arquivo = int(socket.recv(64))

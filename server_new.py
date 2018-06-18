@@ -93,12 +93,7 @@ class Cliente():
                 dados+="\n"
 
             dados+="\n"
-            dados = dados.encode()
-
-            print(dados)
-
-            client.send(str(len(dados)).encode())
-            client.send(dados)
+            envia_string(client,dados)
 
         def _recebe_arquivo(self, client, address):
             """ Refatorar essa função: ela deve retornar um arquivo, para poder enviar aos outros usuários"""
@@ -159,6 +154,7 @@ def servidor(socket, address):
         codigo = recebe_string(socket)
         if (codigo):
             codigo = int(codigo)
+            
             print(f'recebido código:  {codigo} do cliente {address}')
             if (codigo == 1):
                 cliente._login(socket,address)
