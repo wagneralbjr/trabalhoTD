@@ -76,10 +76,7 @@ class Cliente():
                 print('deve estar logado para acessar os arquivos.')
                 return False
 
-
             self.arq.atualiza_arquivos()
-
-            #dados = str(arq.arquivos).encode()
 
             dados = ""
             dados += "NOME\t\t\t\tPASTA\n"
@@ -154,7 +151,7 @@ def servidor(socket, address):
         codigo = recebe_string(socket)
         if (codigo):
             codigo = int(codigo)
-            
+
             print(f'recebido código:  {codigo} do cliente {address}')
             if (codigo == 1):
                 cliente._login(socket,address)
@@ -167,8 +164,7 @@ def servidor(socket, address):
             if (cliente.logado and codigo == 4):
                 cliente._recebe_arquivo(socket, address)
 
-            #if (cliente.logado and codigo == 5):
-            if (codigo == 5):
+            if (cliente.logado and codigo == 5):
                 cliente._envia_arquivo(socket, address)
 
             if (codigo == 0):

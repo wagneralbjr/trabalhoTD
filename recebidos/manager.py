@@ -57,10 +57,9 @@ class Manager:
         """ atualiza os downloads que ja foram conclúidos."""
 
         try:
-            sql = """update files_download set concluido = 1  where login = '%s' and ip = '%s' and port = '%s' """%(user,ip,port)
-            print(sql)
+            sql = """update caminho set concluido = 1 from files_download where login = '%s' and ip = '%s' and port = '%s
+            """%(user,ip,port)
             self.cursor.execute(sql)
-            self.conn.commit()
         except Exception as e:
             print(e)
             return False
